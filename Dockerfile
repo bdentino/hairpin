@@ -29,5 +29,7 @@ WORKDIR /home/hairpin
 # Set up environment
 ENV PATH="/usr/local/bin:$PATH"
 
+ENTRYPOINT ["/usr/local/bin/hairpin"]
+
 # Default command
-CMD ["hairpin", "--help"]
+CMD ["--help"]
