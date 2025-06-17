@@ -130,8 +130,8 @@ remove_route() {
 }
 
 get_existing_routes() {
-    ip -4 route show table local dev lo proto static metric "$HAIRPIN_METRIC" 2>/dev/null | awk '{print $1}'
-    ip -6 route show table local dev lo proto static metric "$HAIRPIN_METRIC" 2>/dev/null | awk '{print $1}'
+    ip -4 route show table local dev lo proto static metric "$HAIRPIN_METRIC" 2>/dev/null | awk '{print $2}'
+    ip -6 route show table local dev lo proto static metric "$HAIRPIN_METRIC" 2>/dev/null | awk '{print $2}'
 }
 
 remove_all_routes() {
