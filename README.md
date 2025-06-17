@@ -2,6 +2,10 @@
 
 A utility daemon that polls for external IPv4/IPv6 addresses and creates local routes to mitigate hairpin NAT routing issues.
 
+> **Caveat:**
+> This script is only useful in network configurations where all outbound traffic from the system to its own external IP is expected to be routed back to the same system.
+> If you are behind a router that forwards different ports to different devices, this script may not work as expected and could interfere with your network setup. For example, if you have port forwarding rules at your router that send port 8080 to device A and port 9090 to device B and you are trying to access device B from device A using their shared public IP, this script will prevent you from accessing device B.
+
 ## Features
 
 - Polls external IPv4 and/or IPv6 addresses
@@ -19,14 +23,14 @@ A utility daemon that polls for external IPv4/IPv6 addresses and creates local r
 # Enable IPv4 monitoring
 ./hairpin.sh --ipv4
 
-# Enable IPv6 monitoring  
+# Enable IPv6 monitoring
 ./hairpin.sh --ipv6
 
 # Enable both IPv4 and IPv6
 ./hairpin.sh --ipv4 --ipv6
 
 # Add DNS64 prefix support (requires --ipv4)
-./hairpin.sh --ipv4 --dns64-64:ff9b::
+./hairpin.sh --ipv4 --dns64 64:ff9b::
 
 # Custom polling interval (default: 60 seconds)
 ./hairpin.sh --ipv4 --ipv6 --interval 30
@@ -35,8 +39,8 @@ A utility daemon that polls for external IPv4/IPv6 addresses and creates local r
 ### Options
 
 - `--ipv4`: Enable IPv4 polling and route creation
-- `--ipv6`: Enable IPv6 polling and route creation  
-- `--dns64-PREFIX`: Create additional IPv6 route using DNS64 prefix (requires --ipv4)
+- `--ipv6`: Enable IPv6 polling and route creation
+- `--dns64 PREFIX`: Create additional IPv6 route using DNS64 prefix (requires --ipv4)
 - `--interval SECONDS`: Polling interval in seconds (default: 60)
 - `--help`: Show help message
 
@@ -90,13 +94,15 @@ docker-compose up hairpin
 
 ### DNS64 Example
 
-With `--dns64-64:ff9b::` and detected IPv4 `203.0.113.1`:
+With `--dns64 64:ff9b::` and detected IPv4 `203.0.113.1`:
+
 - Creates route for `203.0.113.1/32`
 - Creates additional route for `64:ff9b::cb00:7101/128` (DNS64 mapped address)
 
 ## State Management
 
 The daemon maintains minimal state:
+
 - `/tmp/hairpin.sh.lock`: Process lock file
 - Routes are tagged with `proto static metric 99` for automatic discovery
 
@@ -117,10 +123,10 @@ Use the provided Docker Compose services to test different configurations:
 
 ```bash
 # Test IPv4 functionality
-docker-compose up hairpin-ipv4
+docker-compose up hairpin
 
 # Check routes (from another terminal)
-docker exec hairpin-ipv4-test ip route show dev lo
+docker exec hairpin ip route show dev lo
 
 # Test cleanup
 docker-compose down
@@ -129,16 +135,21 @@ docker-compose down
 ## Troubleshooting
 
 ### Permission Errors
+
 Ensure the sudoers file is properly installed and the user is in the sudoers configuration.
 
 ### IPv6 Issues
+
 Verify IPv6 is enabled on the system:
+
 ```bash
 sysctl net.ipv6.conf.all.disable_ipv6
 ```
 
 ### Route Conflicts
+
 The script will fail if routes already exist. Clean existing routes manually if needed:
+
 ```bash
 sudo ip route del <IP>/32 dev lo  # IPv4
 sudo ip route del <IP>/128 dev lo # IPv6
