@@ -1,0 +1,9 @@
+services:
+  hairpin:
+    build: .
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    command:
+      ["hairpin", "--ipv4", "--ipv6", "--dns64-64:ff9b::", "--interval", "30"]

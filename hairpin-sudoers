@@ -1,0 +1,11 @@
+# Sudoers configuration for hairpin script
+# This file should be installed to /etc/sudoers.d/hairpin
+# Usage: sudo visudo -f /etc/sudoers.d/hairpin
+#
+# Allows the hairpin user to run ip route commands without password
+# for managing loopback interface routes
+
+# User privilege specification for hairpin script
+hairpin ALL=(ALL) NOPASSWD: /bin/ip route add * dev lo proto static metric 99, /bin/ip route del * dev lo proto static metric 99
+hairpin ALL=(ALL) NOPASSWD: /sbin/ip route add * dev lo proto static metric 99, /sbin/ip route del * dev lo proto static metric 99
+hairpin ALL=(ALL) NOPASSWD: /usr/sbin/ip route add * dev lo proto static metric 99, /usr/sbin/ip route del * dev lo proto static metric 99
