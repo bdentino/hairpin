@@ -1,0 +1,20 @@
+version: "3"
+
+vars:
+  DOCKER_REGISTRY: bdentino
+  DOCKER_TAG:
+    sh: |
+      GIT_TAG=$(git rev-parse --short HEAD)
+      if ! git diff --quiet || ! git diff --cached --quiet; then
+        GIT_TAG="$GIT_TAG-dirty"
+      fi
+      echo $GIT_TAG
+
+tasks:
+  build:docker:
+    desc: Build multi-arch hairpin image
+    cmds:
+      - |
+        docker buildx build --push --platform linux/amd64,linux/arm64 \
+          --progress=plain \
+          -t {{.DOCKER_REGISTRY}}/hairpin:{{.DOCKER_TAG}} .

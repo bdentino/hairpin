@@ -6,6 +6,10 @@
 # for managing loopback interface routes
 
 # User privilege specification for hairpin script
-hairpin ALL=(ALL) NOPASSWD: /bin/ip route add * dev lo proto static metric 99, /bin/ip route del * dev lo proto static metric 99
-hairpin ALL=(ALL) NOPASSWD: /sbin/ip route add * dev lo proto static metric 99, /sbin/ip route del * dev lo proto static metric 99
-hairpin ALL=(ALL) NOPASSWD: /usr/sbin/ip route add * dev lo proto static metric 99, /usr/sbin/ip route del * dev lo proto static metric 99
+hairpin ALL=(ALL) NOPASSWD: /bin/ip route add local * dev lo proto static metric 99, /bin/ip route del * dev lo proto static metric 99
+hairpin ALL=(ALL) NOPASSWD: /sbin/ip route add local * dev lo proto static metric 99, /sbin/ip route del * dev lo proto static metric 99
+hairpin ALL=(ALL) NOPASSWD: /usr/sbin/ip route add local * dev lo proto static metric 99, /usr/sbin/ip route del * dev lo proto static metric 99
+
+hairpin ALL=(ALL) NOPASSWD: /bin/ip route del local * dev lo proto static metric 99, /bin/ip route del * dev lo proto static metric 99
+hairpin ALL=(ALL) NOPASSWD: /sbin/ip route del local * dev lo proto static metric 99, /sbin/ip route del * dev lo proto static metric 99
+hairpin ALL=(ALL) NOPASSWD: /usr/sbin/ip route del local * dev lo proto static metric 99, /usr/sbin/ip route del * dev lo proto static metric 99

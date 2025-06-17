@@ -107,7 +107,7 @@ add_route() {
     local ip="$1"
     local family="$2"
 
-    if sudo ip route add "$ip" dev lo proto static metric "$HAIRPIN_METRIC" 2>/dev/null; then
+    if sudo ip route add local "$ip" dev lo proto static metric "$HAIRPIN_METRIC" 2>/dev/null; then
         log "Added $family route: $ip -> lo"
         return 0
     else
@@ -120,7 +120,7 @@ remove_route() {
     local ip="$1"
     local family="$2"
 
-    if sudo ip route del "$ip" dev lo proto static metric "$HAIRPIN_METRIC" 2>/dev/null; then
+    if sudo ip route del local "$ip" dev lo proto static metric "$HAIRPIN_METRIC" 2>/dev/null; then
         log "Removed $family route: $ip -> lo"
         return 0
     else
